@@ -1,0 +1,19 @@
+{
+  "name": "wordsearch",
+  "version": "1.0.0",
+  "description": "word search",
+  "main": "wordSearch.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aarontkennedy/wordSearch.git"
+  },
+  "author": "Aaron Kennedy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aarontkennedy/wordSearch/issues"
+  },
+  "homepage": "https://github.com/aarontkennedy/wordSearch#readme"
+}
