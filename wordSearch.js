@@ -42,13 +42,25 @@ const secondArg = process.argv[3];
 function cDictionary (dictionaryFile) {
     this.mapOfWords = null;
 
+    let dt0 = performance.now();
     const fs = require('fs');
     const rawData = fs.readFileSync(dictionaryFile, 'utf8');  
+
+    let dt1 = performance.now();
+    console.log("readFileSync took " + (dt1 - dt0) + " milliseconds.");
+
     const arrayOfWords = rawData.split(/\s+/);
+
+    let dt2 = performance.now();
+    console.log("rawData.split took " + (dt2 - dt1) + " milliseconds.");
+
     this.mapOfWords = new Map();
     for(let i = 0; i < arrayOfWords.length; i++) {
         this.mapOfWords.set(arrayOfWords[i].toLowerCase(), 1);
     } 
+
+    let dt3 = performance.now();
+    console.log("mapOfWords.set took " + (dt3 - dt2) + " milliseconds.");
 
     this.hasWord = (w) => {    
         return this.mapOfWords.has(w);
