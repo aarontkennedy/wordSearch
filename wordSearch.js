@@ -1,3 +1,7 @@
+const {
+    performance
+  } = require('perf_hooks');
+
 /*
 node wordSearch.js "A T L L F U V D E Y O B Z V D 
 W F B N E D X G H E A N P O R 
@@ -51,7 +55,7 @@ function cDictionary (dictionaryFile) {
     };
 }
 
-function cPuzzle (puzzleText, dictionaryObject) {
+function cPuzzle (puzzleText, dictionaryObject, minWordLength=4) {
     let arrayOfLines = puzzleText.split("\n");
     for (let i = 0; i < arrayOfLines.length; i++) {
         arrayOfLines[i] = arrayOfLines[i].replace(/\s+/g, '').toLowerCase();
@@ -65,27 +69,39 @@ function cPuzzle (puzzleText, dictionaryObject) {
         }
         arrayOfVerticalLines.push(verticalString);
     }
-    arrayOfLines.concat(arrayOfVerticalLines);
+    arrayOfLines = arrayOfLines.concat(arrayOfVerticalLines);
 
     solutions = []; 
     this.solve = (print = true) => {
         solutions = []; 
         for (let i = 0; i < arrayOfLines.length; i++) {
             this.findWordsInLine(arrayOfLines[i]);
-            // this.findWordsInLine(arrayOfLines[i].reverse());
+            this.findWordsInLine(arrayOfLines[i].split('').reverse().join(''));
         }
         if (print) {
             console.log(solutions);
         }
     }
     this.findWordsInLine = (line) => {
-        solutions.push(line);
+        const lastCharPositionToTest = line.length-minWordLength;
+        for (let i = 0; i <= lastCharPositionToTest; i++) {
+            for (let j = line.length; j >= i+minWordLength; j--) {
+                let wordToTest = line.substring(i,j);
+                // console.log(`i = ${i} j = ${j} ${wordToTest}  (${line})`);
+                if (dictionaryObject.hasWord(wordToTest)) {
+                    solutions.push(wordToTest);
+                    break;
+                }
+            }
+        }
     }
 }
 
 function init (puzzleString = null, dictionaryFile = '/usr/share/dict/words') {
-
+    var t0 = performance.now();
     dict = new cDictionary(dictionaryFile);
+    var t1 = performance.now();
+    console.log("Call to new cDictionary took " + (t1 - t0) + " milliseconds.");
 
     if (!puzzleString) {
         puzzleString = samplePuzzle;
@@ -93,6 +109,9 @@ function init (puzzleString = null, dictionaryFile = '/usr/share/dict/words') {
     puzzle = new cPuzzle(puzzleString, dict);
 
     puzzle.solve();
+    var t2 = performance.now();
+    console.log("Call to puzzle.solve took " + (t2 - t1) + " milliseconds.");
+    console.log("Total runtime took " + (t2 - t0) + " milliseconds.");
 }
 init(firstArg, secondArg);
 
