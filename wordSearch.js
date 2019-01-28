@@ -40,30 +40,28 @@ const firstArg = process.argv[2];
 const secondArg = process.argv[3];
 
 function cDictionary (dictionaryFile) {
-    this.mapOfWords = null;
-
-    let dt0 = performance.now();
+    // let dt0 = performance.now();
     const fs = require('fs');
     const rawData = fs.readFileSync(dictionaryFile, 'utf8');  
 
-    let dt1 = performance.now();
-    console.log("readFileSync took " + (dt1 - dt0) + " milliseconds.");
+    // let dt1 = performance.now();
+    // console.log("readFileSync took " + (dt1 - dt0) + " milliseconds.");
 
     const arrayOfWords = rawData.split(/\s+/);
 
-    let dt2 = performance.now();
-    console.log("rawData.split took " + (dt2 - dt1) + " milliseconds.");
+    // let dt2 = performance.now();
+    // console.log("rawData.split took " + (dt2 - dt1) + " milliseconds.");
 
-    this.mapOfWords = new Map();
+    mapOfWords = new Map();
     for(let i = 0; i < arrayOfWords.length; i++) {
-        this.mapOfWords.set(arrayOfWords[i].toLowerCase(), 1);
+        mapOfWords.set(arrayOfWords[i].toLowerCase(), 1);
     } 
 
-    let dt3 = performance.now();
-    console.log("mapOfWords.set took " + (dt3 - dt2) + " milliseconds.");
+    // let dt3 = performance.now();
+    // console.log("mapOfWords.set took " + (dt3 - dt2) + " milliseconds.");
 
     this.hasWord = (w) => {    
-        return this.mapOfWords.has(w);
+        return mapOfWords.has(w);
     };
 }
 
@@ -110,10 +108,10 @@ function cPuzzle (puzzleText, dictionaryObject, minWordLength=4) {
 }
 
 function init (puzzleString = null, dictionaryFile = '/usr/share/dict/words') {
-    var t0 = performance.now();
+    // var t0 = performance.now();
     dict = new cDictionary(dictionaryFile);
-    var t1 = performance.now();
-    console.log("Call to new cDictionary took " + (t1 - t0) + " milliseconds.");
+    // var t1 = performance.now();
+    // console.log("Call to new cDictionary took " + (t1 - t0) + " milliseconds.");
 
     if (!puzzleString) {
         puzzleString = samplePuzzle;
@@ -121,9 +119,9 @@ function init (puzzleString = null, dictionaryFile = '/usr/share/dict/words') {
     puzzle = new cPuzzle(puzzleString, dict);
 
     puzzle.solve();
-    var t2 = performance.now();
-    console.log("Call to puzzle.solve took " + (t2 - t1) + " milliseconds.");
-    console.log("Total runtime took " + (t2 - t0) + " milliseconds.");
+    // var t2 = performance.now();
+    // console.log("Call to puzzle.solve took " + (t2 - t1) + " milliseconds.");
+    // console.log("Total runtime took " + (t2 - t0) + " milliseconds.");
 }
 init(firstArg, secondArg);
 
