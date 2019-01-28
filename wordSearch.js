@@ -37,7 +37,8 @@ O J H D N Q A J S Q P L R M U`;
 const firstArg = process.argv[2];
 const secondArg = process.argv[3];
 
-function cDictionary (dictionaryFile) {
+// V1 object to read in a file and provide means to see if it has the word
+function cDictionaryMap (dictionaryFile) {
     // read in the dictionary file
     // let dt0 = performance.now();
     const fs = require('fs');
@@ -60,6 +61,39 @@ function cDictionary (dictionaryFile) {
 
     this.hasWord = (w) => {    
         return mapOfWords.has(w);
+    };
+}
+
+// V2 use an array of words + includes - see if this is faster - WAY WORSE
+function cDictionaryArray (dictionaryFile) {
+    // read in the dictionary file
+    // let dt0 = performance.now();
+    const fs = require('fs');
+    const rawData = fs.readFileSync(dictionaryFile, 'utf8');  
+
+    // convert the dictionary into an array of individual words
+    // let dt1 = performance.now();
+    // console.log("readFileSync took " + (dt1 - dt0) + " milliseconds.");
+    const arrayOfWords = rawData.split(/\s+/);
+
+    // put the words into a map
+    // let dt2 = performance.now();
+    // console.log("rawData.split took " + (dt2 - dt1) + " milliseconds.");
+
+    this.hasWord = (w) => {    
+        return arrayOfWords.includes(w);
+    };
+}
+
+// V3 use raw file + regex - see if this is faster - WAY WORSE & misses words
+function cDictionaryRaw (dictionaryFile) {
+    // read in the dictionary file
+    // let dt0 = performance.now();
+    const fs = require('fs');
+    const rawData = fs.readFileSync(dictionaryFile, 'utf8');  
+
+    this.hasWord = (w) => {    
+        return !(null === rawData.match(new RegExp(`\s${w}\s`)));
     };
 }
 
@@ -112,8 +146,8 @@ function cPuzzle (puzzleText, dictionaryObject, minWordLength=4) {
 }
 
 function init (puzzleString = null, dictionaryFile = '/usr/share/dict/words') {
-    // var t0 = performance.now();
-    dict = new cDictionary(dictionaryFile);
+    var t0 = performance.now();
+    dict = new cDictionaryMap(dictionaryFile);
     // var t1 = performance.now();
     // console.log("Call to new cDictionary took " + (t1 - t0) + " milliseconds.");
 
@@ -123,9 +157,9 @@ function init (puzzleString = null, dictionaryFile = '/usr/share/dict/words') {
     puzzle = new cPuzzle(puzzleString, dict);
 
     puzzle.solve();
-    // var t2 = performance.now();
+    var t2 = performance.now();
     // console.log("Call to puzzle.solve took " + (t2 - t1) + " milliseconds.");
-    // console.log("Total runtime took " + (t2 - t0) + " milliseconds.");
+    console.log("Total runtime took " + (t2 - t0) + " milliseconds.");
 }
 init(firstArg, secondArg);
 
