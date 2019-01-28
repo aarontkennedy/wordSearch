@@ -1,6 +1,4 @@
-const {
-    performance
-  } = require('perf_hooks');
+const { performance } = require('perf_hooks');
 
 /*
 node wordSearch.js "A T L L F U V D E Y O B Z V D 
@@ -40,23 +38,23 @@ const firstArg = process.argv[2];
 const secondArg = process.argv[3];
 
 function cDictionary (dictionaryFile) {
+    // read in the dictionary file
     // let dt0 = performance.now();
     const fs = require('fs');
     const rawData = fs.readFileSync(dictionaryFile, 'utf8');  
 
+    // convert the dictionary into an array of individual words
     // let dt1 = performance.now();
     // console.log("readFileSync took " + (dt1 - dt0) + " milliseconds.");
-
     const arrayOfWords = rawData.split(/\s+/);
 
+    // put the words into a map
     // let dt2 = performance.now();
     // console.log("rawData.split took " + (dt2 - dt1) + " milliseconds.");
-
     mapOfWords = new Map();
     for(let i = 0; i < arrayOfWords.length; i++) {
         mapOfWords.set(arrayOfWords[i].toLowerCase(), 1);
     } 
-
     // let dt3 = performance.now();
     // console.log("mapOfWords.set took " + (dt3 - dt2) + " milliseconds.");
 
@@ -66,11 +64,13 @@ function cDictionary (dictionaryFile) {
 }
 
 function cPuzzle (puzzleText, dictionaryObject, minWordLength=4) {
+    // break the puzzle string into array horizontal lines
     let arrayOfLines = puzzleText.split("\n");
     for (let i = 0; i < arrayOfLines.length; i++) {
         arrayOfLines[i] = arrayOfLines[i].replace(/\s+/g, '').toLowerCase();
     }
 
+    // get the vertical lines
     let arrayOfVerticalLines = new Array();
     for (let i = 0; i < arrayOfLines[0].length; i++) {
         let verticalString = "";
@@ -84,6 +84,7 @@ function cPuzzle (puzzleText, dictionaryObject, minWordLength=4) {
     solutions = []; 
     this.solve = (print = true) => {
         solutions = []; 
+        // check all the lines and the reverse of the line
         for (let i = 0; i < arrayOfLines.length; i++) {
             this.findWordsInLine(arrayOfLines[i]);
             this.findWordsInLine(arrayOfLines[i].split('').reverse().join(''));
@@ -94,7 +95,10 @@ function cPuzzle (puzzleText, dictionaryObject, minWordLength=4) {
     }
     this.findWordsInLine = (line) => {
         const lastCharPositionToTest = line.length-minWordLength;
+        // start finding words from the beginning of the line
         for (let i = 0; i <= lastCharPositionToTest; i++) {
+            // work backwards from the full line down
+            // break as soon as you find a valid word
             for (let j = line.length; j >= i+minWordLength; j--) {
                 let wordToTest = line.substring(i,j);
                 // console.log(`i = ${i} j = ${j} ${wordToTest}  (${line})`);
